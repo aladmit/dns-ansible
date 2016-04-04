@@ -1,0 +1,7 @@
+---
+
+- name: create nsupdate commands
+  template: src=nsupdate.ns.j2 dest=/tmp/nsupdate.ns
+
+- name: add domain
+  command: /bin/nsupdate -k /var/named/keys/{{ first_domain }}.private /tmp/nsupdate.ns

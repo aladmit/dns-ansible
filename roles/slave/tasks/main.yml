@@ -1,0 +1,17 @@
+---
+- include_vars: bind_keys.yml
+
+- name: configure named.conf
+  template: src=named.conf.j2 dest=/etc/named.conf
+
+- name: create dir for keys
+  file: path=/var/named/keys state=directory
+
+- name: install public key
+  lineinfile: dest=/var/named/keys/{{ first_domain }}.key
+              line={{ public_key }}
+              create=True
+
+- name: install private key
+  template: dest=/var/named/keys/{{ first_domain }}.private
+            src=private.key.j2

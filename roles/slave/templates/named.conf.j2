@@ -1,0 +1,41 @@
+options {
+        #listen-on port 53 { 127.0.0.1; };
+
+        listen-on-v6 port 53 { ::1; };
+        directory       "/var/named";
+        dump-file       "/var/named/data/cache_dump.db";
+        statistics-file "/var/named/data/named_stats.txt";
+        memstatistics-file "/var/named/data/named_mem_stats.txt";
+        allow-query     { any; };
+        allow-transfer  { localhost; 20.20.20.20; };
+
+        recursion yes;
+
+        dnssec-enable yes;
+        dnssec-validation yes;
+
+        bindkeys-file "/etc/named.iscdlv.key";
+
+        managed-keys-directory "/var/named/dynamic";
+
+        pid-file "/run/named/named.pid";
+        session-keyfile "/run/named/session.key";
+};
+
+logging {
+        channel default_debug {
+                file "data/named.run";
+                severity dynamic;
+        };
+};
+
+zone "." IN {
+        type hint;
+        file "named.ca";
+};
+
+zone "{{ first_domain }}" IN {
+        type slave;
+        masters { {{ hostvars['master'].ansible_ssh_host }}; };
+        file "{{ first_domain }}.zone";
+};

@@ -1,0 +1,13 @@
+---
+- include_vars: bind_keys.yml
+
+- name: configure named.conf
+  template: src=named.conf.j2 dest=/etc/named.conf
+
+- name: create keys.conf
+  template: src=keys.conf.j2 dest=/etc/named/keys.conf
+
+- name: create {{ first_domain }}.zone
+  template: src=first_domain.zone.j2 dest=/var/named/dynamic/{{ first_domain }}.zone
+  notify:
+    - restart named

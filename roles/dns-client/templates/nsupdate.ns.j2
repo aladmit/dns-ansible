@@ -1,0 +1,5 @@
+server {{ hostvars['master'].ansible_ssh_host }}
+zone {{ first_domain }}
+update add {{ second_domain }}.{{ first_domain }} 86400 A {{ hostvars['slave'].ansible_ssh_host }}
+send
+quit
